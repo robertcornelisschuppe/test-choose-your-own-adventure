@@ -26,18 +26,18 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     
-    transition: background-image 0.8s ease-in-out; /* Slower, smoother fade */
+    transition: background-image 0.8s ease-in-out;
     will-change: transform;
     transform-origin: center center;
 }
 
 .animate-zoom {
-    animation: zoomEffect 25s linear forwards; /* Slower, more cinematic zoom */
+    animation: zoomEffect 40s linear forwards;
 }
 
 @keyframes zoomEffect {
     0% { transform: scale(1); }
-    100% { transform: scale(1.25); }
+    100% { transform: scale(1.2); }
 }
 
 /* --- MODERN START SCREEN --- */
@@ -188,4 +188,5 @@ button:disabled {
         width: 100%; /* Full width buttons on phone */
         padding: 15px;
     }
+
 }
