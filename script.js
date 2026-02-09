@@ -1,5 +1,8 @@
 let storyData = [];
 
+// Standard volume for background music when no "boost" is active
+const BASE_MUSIC_VOL = 0.5; 
+
 window.onload = function() {
     const startBtn = document.getElementById('start-btn');
     startBtn.disabled = true;
@@ -31,7 +34,6 @@ window.onload = function() {
         const startScreen = document.getElementById('start-screen');
         startScreen.classList.add('hidden');
         
-        // Show the game container
         document.querySelector('.game-container').style.display = 'block';
         
         if(storyData.length > 0) {
@@ -61,15 +63,38 @@ function showScene(sceneId) {
         bgLayer.style.backgroundColor = "#2b2d42";
     }
 
-    // Animation Reflow
     bgLayer.classList.remove('animate-zoom');
     void bgLayer.offsetWidth; 
     bgLayer.classList.add('animate-zoom');
 
+    // --- CALCULATE VOLUMES FIRST ---
+    let sfxVolume = 1.0;
+    let musicVolume = BASE_MUSIC_VOL;
+
+    if (scene.sfx_vol && scene.sfx_vol.trim() !== "") {
+        let parsedVol = parseFloat(scene.sfx_vol);
+        if (!isNaN(parsedVol)) {
+            // Logic: If volume is > 100%, we clamp SFX to 1.0 
+            // but LOWER the background music to create contrast.
+            if (parsedVol > 100) {
+                sfxVolume = 1.0;
+                // Example: 200% request -> Music drops to half of its base volume
+                musicVolume = BASE_MUSIC_VOL * (100 / parsedVol); 
+            } else {
+                sfxVolume = parsedVol / 100;
+                musicVolume = BASE_MUSIC_VOL;
+            }
+        }
+    }
+    // Safety clamp (just in case)
+    if (sfxVolume < 0) sfxVolume = 0;
+    if (musicVolume < 0) musicVolume = 0;
+
     // --- BACKGROUND MUSIC ---
     const bgMusic = document.getElementById('bg-music');
-    // Ensure BG music is at full volume (or you can add a column for this too later)
-    bgMusic.volume = 0.5; // Setting BG music to 50% globally so SFX pops more
+    
+    // Apply the calculated volume (this creates the "loudness" effect)
+    bgMusic.volume = musicVolume; 
 
     if (scene.audio && scene.audio.trim() !== "") {
         const newAudioSource = "audio/" + scene.audio;
@@ -79,44 +104,20 @@ function showScene(sceneId) {
         } else if (bgMusic.paused) {
              bgMusic.play().catch(e => console.log("BG Music play error:", e));
         }
-    } else {
-        // Optional: bgMusic.pause(); 
     }
 
-    // --- NEW: SOUND EFFECTS WITH VOLUME CONTROL ---
+    // --- SOUND EFFECTS ---
     const sfxPlayer = document.getElementById('sfx-player');
-    
-    // 1. Reset
     sfxPlayer.pause();
     sfxPlayer.currentTime = 0;
 
-    // 2. Check for file
     if (scene.sfx && scene.sfx.trim() !== "") {
         sfxPlayer.src = "audio/" + scene.sfx;
-        
-        // 3. VOLUME LOGIC
-        // Default to 1.0 (100%) if the column is empty or invalid
-        let volume = 1.0; 
-        
-        if (scene.sfx_vol && scene.sfx_vol.trim() !== "") {
-            // Convert String "50" to Number 50
-            let parsedVol = parseFloat(scene.sfx_vol);
-            
-            // Check if it is a valid number
-            if (!isNaN(parsedVol)) {
-                // Convert percentage to decimal (50 -> 0.5)
-                volume = parsedVol / 100;
-                
-                // Safety clamp (ensure it stays between 0 and 1)
-                if (volume > 1) volume = 1;
-                if (volume < 0) volume = 0;
-            }
-        }
-
-        sfxPlayer.volume = volume;
+        sfxPlayer.volume = sfxVolume;
         sfxPlayer.play().catch(e => console.log("SFX play error:", e));
+        
+        console.log(`Playing SFX at: ${sfxVolume*100}% | Music lowered to: ${musicVolume*100}%`);
     }
-    // ---------------------------------------------
 
     // --- TEXT & BUTTONS ---
     document.getElementById('scene-text').innerText = scene.text;
@@ -138,10 +139,11 @@ function createButton(text, targetId, container) {
     container.appendChild(btn);
 }
 
+// --- CSV PARSER (Includes the Regex fix for commas in text) ---
 function parseCSV(csvText) {
     const lines = csvText.trim().split('\n');
     
-    // 1. Parse Headers (Lowercase & Cleaned)
+    // 1. Parse Headers
     const headers = lines[0].split(',').map(h => h.replace(/^\uFEFF/, '').trim().toLowerCase());
 
     const parsedData = [];
@@ -149,22 +151,19 @@ function parseCSV(csvText) {
     for (let i = 1; i < lines.length; i++) {
         if (lines[i].trim() === "") continue;
 
-        // 2. SMARTER SPLIT: 
-        // This Regex splits by commas ONLY if they are NOT inside quotes.
+        // 2. SMARTER SPLIT: Regex ignores commas inside quotes
         const currentLine = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         
-        // Ensure we have enough columns (matches header count roughly)
         if (currentLine.length > 1) {
             const obj = {};
             headers.forEach((header, index) => {
                 let value = currentLine[index] ? currentLine[index].trim() : "";
                 
-                // Remove the surrounding quotes from text (e.g. "Hello" -> Hello)
                 if (value.startsWith('"') && value.endsWith('"')) {
                     value = value.substring(1, value.length - 1);
                 }
                 
-                // Fix: Unescape double quotes if Excel added them (e.g. "" -> ")
+                // Fix Excel double-quotes
                 value = value.replace(/""/g, '"');
                 
                 obj[header] = value;
