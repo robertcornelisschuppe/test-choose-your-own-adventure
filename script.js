@@ -141,27 +141,32 @@ function createButton(text, targetId, container) {
 function parseCSV(csvText) {
     const lines = csvText.trim().split('\n');
     
-    const commaCount = (lines[0].match(/,/g) || []).length;
-    const semiCount = (lines[0].match(/;/g) || []).length;
-    const delimiter = semiCount > commaCount ? ';' : ',';
-
-    let headers = lines[0].split(delimiter);
-    headers = headers.map(h => h.replace(/^\uFEFF/, '').trim().toLowerCase());
+    // 1. Parse Headers (Lowercase & Cleaned)
+    const headers = lines[0].split(',').map(h => h.replace(/^\uFEFF/, '').trim().toLowerCase());
 
     const parsedData = [];
     
     for (let i = 1; i < lines.length; i++) {
         if (lines[i].trim() === "") continue;
 
-        let currentLine = lines[i].split(delimiter);
+        // 2. SMARTER SPLIT: 
+        // This Regex splits by commas ONLY if they are NOT inside quotes.
+        const currentLine = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         
-        if (currentLine.length >= headers.length) {
+        // Ensure we have enough columns (matches header count roughly)
+        if (currentLine.length > 1) {
             const obj = {};
             headers.forEach((header, index) => {
                 let value = currentLine[index] ? currentLine[index].trim() : "";
+                
+                // Remove the surrounding quotes from text (e.g. "Hello" -> Hello)
                 if (value.startsWith('"') && value.endsWith('"')) {
                     value = value.substring(1, value.length - 1);
                 }
+                
+                // Fix: Unescape double quotes if Excel added them (e.g. "" -> ")
+                value = value.replace(/""/g, '"');
+                
                 obj[header] = value;
             });
             parsedData.push(obj);
