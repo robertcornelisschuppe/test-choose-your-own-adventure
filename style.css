@@ -32,7 +32,7 @@ body {
 }
 
 .animate-zoom {
-    animation: zoomEffect 40s linear forwards;
+    animation: zoomEffect 30s linear forwards;
 }
 
 @keyframes zoomEffect {
@@ -190,3 +190,4 @@ button:disabled {
     }
 
 }
+
