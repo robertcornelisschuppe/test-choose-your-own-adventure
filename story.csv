@@ -1,5 +1,5 @@
 id,text,image,audio,sfx,sfx_vol,option1,target1,option2,target2
-start,"Mach dich auf den Weg, mehr zu erfahren!",Start.png,forest.mp3,Start.mp3,500,Erfahre mehr,clearing,,
+start,"Mach dich auf den Weg, mehr zu erfahren!",Start.png,forest.mp3,Start.mp3,100,Erfahre mehr,clearing,,
 clearing,You find a sunny clearing with a strange chest.,chest.jpg,forest.mp3,Start.mp3,130,chest,treasure,Leave it alone,forest_entry
 home,You go home and have some tea. It is very boring.,tea.jpg,forest.mp3,Start.mp3,130,Try again,start,,
 treasure,It is full of gold! You win!,gold.jpg,forest.mp3,Start.mp3,130,Play again,start,,
