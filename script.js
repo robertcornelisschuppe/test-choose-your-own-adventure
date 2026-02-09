@@ -1,7 +1,7 @@
 let storyData = [];
 
 // Standard volume for background music when no "boost" is active
-const BASE_MUSIC_VOL = 0.4; 
+const BASE_MUSIC_VOL = 0.3; 
 
 window.onload = function() {
     const startBtn = document.getElementById('start-btn');
@@ -173,6 +173,7 @@ function parseCSV(csvText) {
     }
     return parsedData;
 }
+
 
 
 
