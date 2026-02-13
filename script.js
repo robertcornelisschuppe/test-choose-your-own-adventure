@@ -58,36 +58,59 @@ function showScene(sceneId) {
     const container = document.querySelector('.game-container');
     container.classList.remove('visible');
 
-    // --- 2. BACKGROUND IMAGE LOGIC ---
+// --- 2. BACKGROUND IMAGE LOGIC (With Cinematic Camera) ---
     const bgFront = document.getElementById('bg-front');
     const bgBack = document.getElementById('bg-back');
+    
+    // Identify which layer is currently active
     let currentLayer = bgFront.classList.contains('bg-visible') ? bgFront : bgBack;
     let nextLayer = currentLayer === bgFront ? bgBack : bgFront;
 
     if (scene.image && scene.image.trim() !== "") {
         const imgUrl = "images/" + scene.image;
+        
+        // Preload image
         const imgLoader = new Image();
         imgLoader.src = imgUrl;
         
         imgLoader.onload = () => {
+            // 1. Set the new image
             nextLayer.style.backgroundImage = `url('${imgUrl}')`;
-            nextLayer.classList.remove('animate-zoom');
-            void nextLayer.offsetWidth; 
-            nextLayer.classList.add('animate-zoom');
+            
+            // 2. RANDOMIZE THE CAMERA ANGLE
+            // This creates the illusion of moving through 3D space.
+            // We pick a random point to "zoom towards".
+            const x = Math.floor(Math.random() * 100); // 0% to 100%
+            const y = Math.floor(Math.random() * 100); // 0% to 100%
+            nextLayer.style.transformOrigin = `${x}% ${y}%`;
+
+            // 3. Reset animation classes
+            nextLayer.classList.remove('cinematic-move');
+            void nextLayer.offsetWidth; // Force browser refresh (Magic trick)
+            
+            // 4. Start Animation & Fade In
+            nextLayer.classList.add('cinematic-move');
             nextLayer.classList.add('bg-visible');
+            
+            // 5. Hide old layer after fade is done
             currentLayer.classList.remove('bg-visible');
+            
+            // Clean up the old layer after 1.2s (slightly longer than CSS transition)
             setTimeout(() => {
                 currentLayer.style.backgroundImage = 'none';
-                currentLayer.classList.remove('animate-zoom');
+                currentLayer.classList.remove('cinematic-move');
+                // Reset transform so it doesn't get stuck
+                currentLayer.style.transform = 'scale(1)'; 
             }, 1200);
         };
     } else {
+        // Fallback if no image exists
         nextLayer.style.backgroundImage = 'none';
         nextLayer.style.backgroundColor = "#2b2d42";
         nextLayer.classList.add('bg-visible');
         currentLayer.classList.remove('bg-visible');
     }
-
+    
     // --- 3. CALCULATE VOLUMES ---
     let sfxVolume = 1.0;
     let musicVolume = BASE_MUSIC_VOL;
@@ -190,3 +213,4 @@ function parseCSV(csvText) {
     }
     return parsedData;
 }
+
