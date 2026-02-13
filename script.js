@@ -43,6 +43,28 @@ window.onload = function() {
             }, 100);
         }
     });
+
+    // --- SKIP FUNCTION (Enter Key) ---
+    document.addEventListener('keydown', function(event) {
+        // Check if key is "Enter"
+        if (event.key === "Enter") {
+            const container = document.querySelector('.game-container');
+            const sfxPlayer = document.getElementById('sfx-player');
+
+            // Only skip if the text box is currently HIDDEN (meaning we are waiting for audio)
+            if (!container.classList.contains('visible')) {
+                
+                // 1. Stop the audio immediately
+                sfxPlayer.pause();
+                sfxPlayer.currentTime = 0; // Optional: rewind to start so it doesn't resume later
+
+                // 2. Force the text box to appear
+                container.classList.add('visible');
+                
+                console.log("Skipped audio via Enter key");
+            }
+        }
+    });
 };
 
 function showScene(sceneId) {
@@ -197,6 +219,7 @@ function parseCSV(csvText) {
     }
     return parsedData;
 }
+
 
 
 
