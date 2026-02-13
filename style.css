@@ -1,4 +1,4 @@
-/* Import a nice modern font */
+/* Import font */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 
 body {
@@ -9,7 +9,7 @@ body {
     background-color: #111;
     display: flex;
     justify-content: center;
-    align-items: flex-end; /* Aligns content to bottom */
+    align-items: flex-end;
     padding-bottom: 60px;
     box-sizing: border-box;
 }
@@ -29,37 +29,27 @@ body {
     
     /* Start hidden by default */
     opacity: 0;
-    transition: opacity 1.0s ease-in-out; /* Smooth crossfade */
+    transition: opacity 1.0s ease-in-out; 
     
-    /* Prepare for zoom animation */
+    /* Prepare for animation */
     transform: scale(1);
     will-change: transform, opacity;
 }
 
-/* This class makes the layer visible */
 .bg-visible {
     opacity: 1;
     z-index: 1;
 }
 
-/* --- CINEMATIC CAMERA ANIMATION --- */
+/* --- CINEMATIC CAMERA ANIMATION (Drift) --- */
 .cinematic-move {
-    /* We don't define 'transform-origin' here anymore. 
-       JavaScript will assign a random angle (Top-Left, Bottom-Right, etc.)
-       for each scene to make the movement feel unique.
-    */
+    /* Transform origin is set via JS for randomness */
     animation: driftEffect 30s ease-out forwards;
 }
 
 @keyframes driftEffect {
-    0% { 
-        transform: scale(1.0); 
-    }
-    100% { 
-        /* Zooms in AND moves slightly, creating the 3D "walk" feel */
-        transform: scale(1.25); 
-    }
-}
+    0% { transform: scale(1.0); }
+    100% { transform: scale(1.25); }
 }
 
 /* --- START SCREEN --- */
@@ -119,18 +109,19 @@ body {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
     
     z-index: 100;
-    display: none; /* Keeps it strictly hidden on load */
+    display: none; 
 
-    /* NEW: Fading Logic */
+    /* Fading Logic */
     opacity: 0;
-    pointer-events: none; /* Prevents clicking buttons while invisible */
-    transition: opacity 1.0s ease; /* Smooth 1-second fade in */
+    pointer-events: none; 
+    transition: opacity 1.0s ease; 
 }
 
 .game-container.visible {
     opacity: 1;
     pointer-events: auto;
 }
+
 /* Text Styling */
 .text-area p {
     font-size: 1.25rem;
@@ -180,11 +171,6 @@ button:disabled {
     box-shadow: none;
 }
 
-@keyframes slideUp {
-    from { transform: translateX(-50%) translateY(100px); opacity: 0; }
-    to { transform: translateX(-50%) translateY(0); opacity: 1; }
-}
-
 /* Scrollbar Styling */
 .game-container::-webkit-scrollbar {
     width: 8px;
@@ -200,7 +186,6 @@ button:disabled {
 /* --- MOBILE DEVICES (Phones) --- */
 @media (max-width: 768px) {
     .game-container {
-        /* On phones, keep it wide so text is readable */
         width: 92%; 
         bottom: 3%; 
         padding: 20px;
@@ -222,5 +207,3 @@ button:disabled {
         margin-bottom: 5px;
     }
 }
-
-
