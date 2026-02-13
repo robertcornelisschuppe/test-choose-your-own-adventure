@@ -54,14 +54,49 @@ function showScene(sceneId) {
         return;
     }
 
-    // --- BACKGROUND IMAGE ---
-    const bgLayer = document.getElementById('background-layer');
+    // --- BACKGROUND LOADER ---
+    const bgFront = document.getElementById('bg-front');
+    const bgBack = document.getElementById('bg-back');
+    
+    // Determine which layer is currently active (visible)
+    let currentLayer = bgFront.classList.contains('bg-visible') ? bgFront : bgBack;
+    let nextLayer = currentLayer === bgFront ? bgBack : bgFront;
+
     if (scene.image && scene.image.trim() !== "") {
-        bgLayer.style.backgroundImage = "url('images/" + scene.image + "')";
+        const imgUrl = "images/" + scene.image;
+        
+        // 1. Create a temp image to check when it's fully loaded
+        const imgLoader = new Image();
+        imgLoader.src = imgUrl;
+        
+        imgLoader.onload = () => {
+            // 2. Only runs when image is downloaded and ready
+            nextLayer.style.backgroundImage = `url('${imgUrl}')`;
+            
+            // 3. Reset animation on the new layer so it starts fresh
+            nextLayer.classList.remove('animate-zoom');
+            void nextLayer.offsetWidth; // Force reflow (reset CSS animation)
+            nextLayer.classList.add('animate-zoom');
+
+            // 4. Crossfade: Show new layer, Hide old layer
+            nextLayer.classList.add('bg-visible');
+            currentLayer.classList.remove('bg-visible');
+            
+            // Optional: Clean up old layer after fade is done (1 second)
+            setTimeout(() => {
+                currentLayer.style.backgroundImage = 'none';
+                currentLayer.classList.remove('animate-zoom');
+            }, 1000);
+        };
     } else {
-        bgLayer.style.backgroundImage = "none";
-        bgLayer.style.backgroundColor = "#2b2d42";
+        // Fallback for scenes with no image
+        nextLayer.style.backgroundImage = 'none';
+        nextLayer.style.backgroundColor = "#2b2d42";
+        nextLayer.classList.add('bg-visible');
+        currentLayer.classList.remove('bg-visible');
     }
+
+// ... continue with // --- CALCULATE VOLUMES FIRST --- ...
 
     bgLayer.classList.remove('animate-zoom');
     void bgLayer.offsetWidth; 
@@ -173,6 +208,7 @@ function parseCSV(csvText) {
     }
     return parsedData;
 }
+
 
 
 
