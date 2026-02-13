@@ -3,3 +3,5 @@ Start,"Mach dich auf den Weg, mehr zu erfahren!",Start.png,forest.mp3,Start.mp3,
 Markt,"Finde heraus, wer der Mann ist!",Markt.png,forest.mp3,,100,Gehe auf ihn zu,Werber,,
 Werber,"Das wirst du dir durch den Kopf gehen lassen.",Werber.png,forest.mp3,,100,Die nächsten Monate,Planungen,,
 Planungen,"Möchtest du den Hof verkaufen oder an deinen Bruder Kurt übergeben?",Planungen.png,forest.mp3,,100,Verkaufen,Verkaufen,An deinen Bruder übereben,Verschenken
+Verkaufen,"Auf zum Hafen!",Verkaufen.png,forest.mp3,,100,Hafen,Hafen,,
+Hafen,"Betretet das Schiff!",Hafen.png,forest.mp3,,100,An Bord,Überfahrt,,
