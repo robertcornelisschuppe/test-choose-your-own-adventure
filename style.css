@@ -12,8 +12,7 @@ body {
     box-sizing: border-box;
 }
 
-/* --- BACKGROUND LAYER & ANIMATION --- */
-#background-layer {
+.bg-layer {
     position: fixed;
     top: 0;
     left: 0;
@@ -21,14 +20,33 @@ body {
     height: 100%;
     z-index: 0;
     
-    background-color: rgba(18, 20, 30, 0.85); /* Dark blue-grey fallback */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     
-    transition: background-image 0.8s ease-in-out;
-    will-change: transform;
-    transform-origin: center center;
+    /* Start hidden by default */
+    opacity: 0;
+    transition: opacity 1.0s ease-in-out; /* Smooth crossfade */
+    
+    /* Prepare for zoom animation */
+    transform: scale(1);
+    will-change: transform, opacity;
+}
+
+/* This class makes the layer visible */
+.bg-visible {
+    opacity: 1;
+    z-index: 1; /* Sit above the hidden layer */
+}
+
+/* The Zoom Animation */
+.animate-zoom {
+    animation: zoomEffect 30s linear forwards;
+}
+
+@keyframes zoomEffect {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.2); } 
 }
 
 .animate-zoom {
@@ -190,4 +208,5 @@ button:disabled {
     }
 
 }
+
 
