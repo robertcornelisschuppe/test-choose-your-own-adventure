@@ -1,240 +1,70 @@
-/* Import a nice modern font (fallback included if you don't add the HTML link) */
-body {
-    font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
-    margin: 0;
-    height: 100vh;
-    overflow: hidden;
-    background-color: #111; /* Fallback dark color */
-    display: flex;
-    justify-content: center;
-    align-items: flex-end; /* Aligns box to bottom */
-    padding-bottom: 60px; /* Space from bottom */
-    box-sizing: border-box;
-}
-
-.bg-layer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    
-    /* Start hidden by default */
-    opacity: 0;
-    transition: opacity 1.0s ease-in-out; /* Smooth crossfade */
-    
-    /* Prepare for zoom animation */
-    transform: scale(1);
-    will-change: transform, opacity;
-}
-
-/* This class makes the layer visible */
-.bg-visible {
-    opacity: 1;
-    z-index: 1; /* Sit above the hidden layer */
-}
-
-/* The Zoom Animation */
-.animate-zoom {
-    animation: zoomEffect 30s linear forwards;
-}
-
-@keyframes zoomEffect {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.2); } 
-}
-
-.animate-zoom {
-    animation: zoomEffect 30s linear forwards;
-}
-
-@keyframes zoomEffect {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.2); }
-}
-
-/* --- MODERN START SCREEN --- */
-#start-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Gradient background for start screen */
-    background: linear-gradient(135deg, #1a1a2e 0%, rgba(18, 20, 30, 0.85) 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    transition: opacity 0.8s ease;
-}
-
-#start-screen h1 {
-    color: white;
-    font-size: 4rem;
-    font-weight: 800;
-    margin-bottom: 40px;
-    text-transform: uppercase;
-    letter-spacing: 8px;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-}
-
-.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
+/* --- THE GAME CONTAINER --- */
 .game-container {
-    position: fixed; /* Keeps it stuck to the bottom */
+    position: fixed;
     bottom: 5%;
     left: 50%;
     transform: translateX(-50%);
     
-    /* WIDTH: 80% on desktop looks good */
-    width: 80%; 
-    max-width: 800px;
+    /* 1. SMALLER SIZE (Desktop) */
+    width: 60%; 
+    max-width: 650px; 
     
-    /* HEIGHT CONTROL: Never take more than 40% of the screen */
+    /* Height Control */
     max-height: 40vh; 
-    overflow-y: auto; /* Adds a scrollbar if text is too long */
+    overflow-y: auto; /* Scrollbar if text is too long */
     
-    background: rgba(0, 0, 0, 0.85); /* Slightly darker for readability */
+    /* 2. NO WHITE OUTLINE (Border removed) */
+    border: none; 
+    
+    /* Dark Glass Style */
+    background: rgba(15, 15, 20, 0.9); /* Slightly darker/more opaque */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
     padding: 30px;
-    border-radius: 15px;
-    border: 2px solid #fff;
+    border-radius: 20px;
+    
     text-align: center;
     color: white;
-    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8); /* Soft shadow instead of border */
     
-    /* Smooth transition if you resize window */
     transition: all 0.3s ease;
     z-index: 100;
+
+    /* 3. FIX "SHINING THROUGH" (Start hidden) */
+    display: none; 
 }
 
-/* Text Styling */
-.text-area p {
-    font-size: 1.35rem; /* Larger text */
-    line-height: 1.7; /* More breathing room between lines */
-    color: #f0f0f0;
-    margin: 0 0 35px 0;
-    font-weight: 300; /* Lighter font weight looks cleaner */
-    letter-spacing: 0.02em;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Increases readability over images */
+/* Custom Scrollbar Styling (Optional, makes scrollbar nicer) */
+.game-container::-webkit-scrollbar {
+    width: 8px;
 }
-
-/* Button Area */
-.options-area {
-    display: flex;
-    gap: 15px;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Divider line */
+.game-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
 }
-
-/* Modern Buttons */
-button {
-    /* Gradient Background */
-    background: linear-gradient(145deg, #3e424b, #2a2d35);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    
-    padding: 15px 30px;
-    color: #ffffff;
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    
-    border-radius: 50px; /* Pill/Capsule shape */
-    cursor: pointer;
-    
-    /* Smooth transitions for everything */
-    transition: all 0.3s ease;
-    min-width: 160px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+.game-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
 }
-
-/* Button Hover Effects */
-button:hover {
-    background: linear-gradient(145deg, #505561, #363a45);
-    transform: translateY(-3px); /* Moves up slightly */
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 
-                0 0 10px rgba(255, 255, 255, 0.1); /* Subtle glow */
-    border-color: rgba(255, 255, 255, 0.4);
-}
-
-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
-}
-
-/* Disabled button state */
-button:disabled {
-    opacity: 0.6;
-    cursor: wait;
-    transform: none;
-    box-shadow: none;
-}
-
-@keyframes slideUp {
-    from { transform: translateY(100px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-/* Mobile Tweaks */
-@media (max-width: 600px) {
-    .game-container {
-        padding: 25px;
-        width: 95%;
-        margin-bottom: 20px;
-    }
-    
-    #start-screen h1 {
-        font-size: 2rem;
-    }
-    
-    .text-area p {
-        font-size: 1.1rem;
-    }
-    
-    button {
-        width: 100%; /* Full width buttons on phone */
-        padding: 15px;
-    }
 
 /* --- MOBILE DEVICES (Phones) --- */
 @media (max-width: 768px) {
     .game-container {
-        /* On phones, make the box wider (95%) so text takes fewer lines */
-        width: 95%; 
-        bottom: 2%; /* Move it closer to the bottom edge */
-        padding: 15px; /* Less padding to save space */
-        
-        /* Allow it to take up to 50% of the screen on mobile if needed */
-        max-height: 50vh; 
+        /* On phones, keep it wide so text is readable */
+        width: 92%; 
+        bottom: 3%; 
+        padding: 20px;
+        max-height: 50vh;
     }
 
-    /* Make the story text slightly smaller */
     #scene-text {
-        font-size: 1rem; /* Standard readable size */
+        font-size: 1rem;
         line-height: 1.4;
     }
 
-    /* Make buttons smaller and more compact */
     button {
-        padding: 10px 15px;
-        font-size: 0.9rem;
-        margin: 5px;
-        width: 100%; /* Make buttons full width on phones for easier tapping */
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 8px;
     }
 }
-
-}
-
-
-
