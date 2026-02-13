@@ -1,5 +1,5 @@
 let storyData = [];
-const BASE_MUSIC_VOL = 0.2; 
+const BASE_MUSIC_VOL = 0.1; 
 
 window.onload = function() {
     const startBtn = document.getElementById('start-btn');
@@ -197,4 +197,5 @@ function parseCSV(csvText) {
     }
     return parsedData;
 }
+
 
