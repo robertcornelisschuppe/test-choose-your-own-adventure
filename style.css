@@ -91,18 +91,12 @@ body {
     left: 50%;
     transform: translateX(-50%);
     
-    /* 1. SMALLER SIZE (Desktop) */
     width: 60%; 
     max-width: 650px; 
-    
-    /* Height Control */
     max-height: 40vh; 
-    overflow-y: auto; /* Scrollbar if text is too long */
+    overflow-y: auto;
     
-    /* 2. NO WHITE OUTLINE */
     border: none; 
-    
-    /* Dark Glass Style */
     background: rgba(15, 15, 20, 0.9); 
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -114,16 +108,19 @@ body {
     color: white;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
     
-    transition: all 0.3s ease;
     z-index: 100;
+    display: none; /* Keeps it strictly hidden on load */
 
-    /* 3. FIX "SHINING THROUGH" (Start hidden) */
-    display: none; 
-    
-    /* Slide up animation */
-    animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    /* NEW: Fading Logic */
+    opacity: 0;
+    pointer-events: none; /* Prevents clicking buttons while invisible */
+    transition: opacity 1.0s ease; /* Smooth 1-second fade in */
 }
 
+.game-container.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
 /* Text Styling */
 .text-area p {
     font-size: 1.25rem;
@@ -215,3 +212,4 @@ button:disabled {
         margin-bottom: 5px;
     }
 }
+
