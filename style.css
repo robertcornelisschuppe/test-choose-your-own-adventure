@@ -42,14 +42,24 @@ body {
     z-index: 1;
 }
 
-/* The Zoom Animation */
-.animate-zoom {
-    animation: zoomEffect 30s linear forwards;
+/* --- CINEMATIC CAMERA ANIMATION --- */
+.cinematic-move {
+    /* We don't define 'transform-origin' here anymore. 
+       JavaScript will assign a random angle (Top-Left, Bottom-Right, etc.)
+       for each scene to make the movement feel unique.
+    */
+    animation: driftEffect 30s ease-out forwards;
 }
 
-@keyframes zoomEffect {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.2); } 
+@keyframes driftEffect {
+    0% { 
+        transform: scale(1.0); 
+    }
+    100% { 
+        /* Zooms in AND moves slightly, creating the 3D "walk" feel */
+        transform: scale(1.25); 
+    }
+}
 }
 
 /* --- START SCREEN --- */
@@ -212,4 +222,5 @@ button:disabled {
         margin-bottom: 5px;
     }
 }
+
 
