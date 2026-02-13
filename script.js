@@ -54,57 +54,45 @@ function showScene(sceneId) {
     }
 
     // --- 1. HIDE TEXT BOX IMMEDIATELY ---
-    // We hide it every time a new scene starts so we can fade it in later
     const container = document.querySelector('.game-container');
     container.classList.remove('visible');
 
-// --- 2. BACKGROUND IMAGE LOGIC (With Cinematic Camera) ---
+    // --- 2. BACKGROUND IMAGE LOGIC (With Cinematic Drift) ---
     const bgFront = document.getElementById('bg-front');
     const bgBack = document.getElementById('bg-back');
     
-    // Identify which layer is currently active
     let currentLayer = bgFront.classList.contains('bg-visible') ? bgFront : bgBack;
     let nextLayer = currentLayer === bgFront ? bgBack : bgFront;
 
     if (scene.image && scene.image.trim() !== "") {
         const imgUrl = "images/" + scene.image;
         
-        // Preload image
         const imgLoader = new Image();
         imgLoader.src = imgUrl;
         
         imgLoader.onload = () => {
-            // 1. Set the new image
             nextLayer.style.backgroundImage = `url('${imgUrl}')`;
             
-            // 2. RANDOMIZE THE CAMERA ANGLE
-            // This creates the illusion of moving through 3D space.
-            // We pick a random point to "zoom towards".
+            // RANDOMIZE THE CAMERA ANGLE
             const x = Math.floor(Math.random() * 100); // 0% to 100%
             const y = Math.floor(Math.random() * 100); // 0% to 100%
             nextLayer.style.transformOrigin = `${x}% ${y}%`;
 
-            // 3. Reset animation classes
             nextLayer.classList.remove('cinematic-move');
-            void nextLayer.offsetWidth; // Force browser refresh (Magic trick)
+            void nextLayer.offsetWidth; // Force browser refresh
             
-            // 4. Start Animation & Fade In
             nextLayer.classList.add('cinematic-move');
             nextLayer.classList.add('bg-visible');
             
-            // 5. Hide old layer after fade is done
             currentLayer.classList.remove('bg-visible');
             
-            // Clean up the old layer after 1.2s (slightly longer than CSS transition)
             setTimeout(() => {
                 currentLayer.style.backgroundImage = 'none';
                 currentLayer.classList.remove('cinematic-move');
-                // Reset transform so it doesn't get stuck
                 currentLayer.style.transform = 'scale(1)'; 
             }, 1200);
         };
     } else {
-        // Fallback if no image exists
         nextLayer.style.backgroundImage = 'none';
         nextLayer.style.backgroundColor = "#2b2d42";
         nextLayer.classList.add('bg-visible');
@@ -141,7 +129,7 @@ function showScene(sceneId) {
         }
     }
 
-    // --- 5. UPDATE TEXT CONTENT (Invisible for now) ---
+    // --- 5. UPDATE TEXT CONTENT ---
     document.getElementById('scene-text').innerText = scene.text;
     const optionsContainer = document.getElementById('options-area');
     optionsContainer.innerHTML = "";
@@ -149,33 +137,29 @@ function showScene(sceneId) {
     if (scene.option1 && scene.target1) createButton(scene.option1, scene.target1, optionsContainer);
     if (scene.option2 && scene.target2) createButton(scene.option2, scene.target2, optionsContainer);
 
-
     // --- 6. SFX & REVEAL LOGIC ---
     const sfxPlayer = document.getElementById('sfx-player');
     
-    // Clear any old event listeners so they don't stack up
     sfxPlayer.onended = null;
     sfxPlayer.pause();
     sfxPlayer.currentTime = 0;
 
-    // Check if we have a valid SFX file
     if (scene.sfx && scene.sfx.trim() !== "") {
         sfxPlayer.src = "audio/" + scene.sfx;
         sfxPlayer.volume = sfxVolume;
         
-        // When SFX finishes, show the box
+        // Show text when SFX ends
         sfxPlayer.onended = () => {
             container.classList.add('visible');
         };
 
-        // Play sound
         sfxPlayer.play().catch(e => {
-            console.log("SFX play error (showing text anyway):", e);
+            console.log("SFX play error:", e);
             container.classList.add('visible');
         });
 
     } else {
-        // No SFX? Show text immediately (with slight delay for smoothness)
+        // No SFX? Show immediately
         setTimeout(() => {
             container.classList.add('visible');
         }, 300);
@@ -213,4 +197,3 @@ function parseCSV(csvText) {
     }
     return parsedData;
 }
-
