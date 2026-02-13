@@ -1,5 +1,5 @@
 id,text,image,audio,sfx,sfx_vol,option1,target1,option2,target2
-start,"Mach dich auf den Weg, mehr zu erfahren!",Start.png,forest.mp3,Start.mp3,100,Erfahre mehr,clearing,,
-clearing,You find a sunny clearing with a strange chest.,chest.jpg,forest.mp3,Start.mp3,130,chest,treasure,Leave it alone,forest_entry
-home,You go home and have some tea. It is very boring.,tea.jpg,forest.mp3,Start.mp3,130,Try again,start,,
-treasure,It is full of gold! You win!,gold.jpg,forest.mp3,Start.mp3,130,Play again,start,,
+Start,"Mach dich auf den Weg, mehr zu erfahren!",Start.png,forest.mp3,Start.mp3,100,Erfahre mehr,Markt,,
+Markt,"Finde heraus, wer der Mann ist!",Markt.png,forest.mp3,,100,Gehe auf ihn zu,Werber,,
+Werber,"Das wirst du dir durch den Kopf gehen lassen.",Werber.png,forest.mp3,,100,Die nächsten Monate,Planungen,,
+Planungen,"Möchtest du den Hof verkaufen oder an deinen Bruder Kurt übergeben?",Planungen.png,forest.mp3,,100,Verkaufen,Verkaufen,An deinen Bruder übereben,Verschenken
