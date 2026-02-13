@@ -54,7 +54,7 @@ function showScene(sceneId) {
         return;
     }
 
-    // --- BACKGROUND LOADER ---
+    // --- 1. BACKGROUND IMAGE LOGIC (Double Buffering) ---
     const bgFront = document.getElementById('bg-front');
     const bgBack = document.getElementById('bg-back');
     
@@ -65,28 +65,28 @@ function showScene(sceneId) {
     if (scene.image && scene.image.trim() !== "") {
         const imgUrl = "images/" + scene.image;
         
-        // 1. Create a temp image to check when it's fully loaded
+        // Create a temp image to pre-load
         const imgLoader = new Image();
         imgLoader.src = imgUrl;
         
         imgLoader.onload = () => {
-            // 2. Only runs when image is downloaded and ready
+            // Only run this when image is ready
             nextLayer.style.backgroundImage = `url('${imgUrl}')`;
             
-            // 3. Reset animation on the new layer so it starts fresh
+            // Reset animation
             nextLayer.classList.remove('animate-zoom');
-            void nextLayer.offsetWidth; // Force reflow (reset CSS animation)
+            void nextLayer.offsetWidth; // Force reflow
             nextLayer.classList.add('animate-zoom');
 
-            // 4. Crossfade: Show new layer, Hide old layer
+            // Crossfade
             nextLayer.classList.add('bg-visible');
             currentLayer.classList.remove('bg-visible');
             
-            // Optional: Clean up old layer after fade is done (1 second)
+            // Clean up old layer after fade (1.2s)
             setTimeout(() => {
                 currentLayer.style.backgroundImage = 'none';
                 currentLayer.classList.remove('animate-zoom');
-            }, 1000);
+            }, 1200);
         };
     } else {
         // Fallback for scenes with no image
@@ -96,24 +96,16 @@ function showScene(sceneId) {
         currentLayer.classList.remove('bg-visible');
     }
 
-// ... continue with // --- CALCULATE VOLUMES FIRST --- ...
-
-    bgLayer.classList.remove('animate-zoom');
-    void bgLayer.offsetWidth; 
-    bgLayer.classList.add('animate-zoom');
-
-    // --- CALCULATE VOLUMES FIRST ---
+    // --- 2. CALCULATE VOLUMES ---
     let sfxVolume = 1.0;
     let musicVolume = BASE_MUSIC_VOL;
 
     if (scene.sfx_vol && scene.sfx_vol.trim() !== "") {
         let parsedVol = parseFloat(scene.sfx_vol);
         if (!isNaN(parsedVol)) {
-            // Logic: If volume is > 100%, we clamp SFX to 1.0 
-            // but LOWER the background music to create contrast.
             if (parsedVol > 100) {
                 sfxVolume = 1.0;
-                // Example: 200% request -> Music drops to half of its base volume
+                // Ducking logic: Lower music if SFX is boosted
                 musicVolume = BASE_MUSIC_VOL * (100 / parsedVol); 
             } else {
                 sfxVolume = parsedVol / 100;
@@ -121,14 +113,12 @@ function showScene(sceneId) {
             }
         }
     }
-    // Safety clamp (just in case)
+    // Safety clamp
     if (sfxVolume < 0) sfxVolume = 0;
     if (musicVolume < 0) musicVolume = 0;
 
-    // --- BACKGROUND MUSIC ---
+    // --- 3. AUDIO PLAYBACK ---
     const bgMusic = document.getElementById('bg-music');
-    
-    // Apply the calculated volume (this creates the "loudness" effect)
     bgMusic.volume = musicVolume; 
 
     if (scene.audio && scene.audio.trim() !== "") {
@@ -141,7 +131,6 @@ function showScene(sceneId) {
         }
     }
 
-    // --- SOUND EFFECTS ---
     const sfxPlayer = document.getElementById('sfx-player');
     sfxPlayer.pause();
     sfxPlayer.currentTime = 0;
@@ -150,11 +139,9 @@ function showScene(sceneId) {
         sfxPlayer.src = "audio/" + scene.sfx;
         sfxPlayer.volume = sfxVolume;
         sfxPlayer.play().catch(e => console.log("SFX play error:", e));
-        
-        console.log(`Playing SFX at: ${sfxVolume*100}% | Music lowered to: ${musicVolume*100}%`);
     }
 
-    // --- TEXT & BUTTONS ---
+    // --- 4. UPDATE TEXT & BUTTONS ---
     document.getElementById('scene-text').innerText = scene.text;
     const optionsContainer = document.getElementById('options-area');
     optionsContainer.innerHTML = "";
@@ -174,33 +161,24 @@ function createButton(text, targetId, container) {
     container.appendChild(btn);
 }
 
-// --- CSV PARSER (Includes the Regex fix for commas in text) ---
+// --- CSV PARSER ---
 function parseCSV(csvText) {
     const lines = csvText.trim().split('\n');
-    
-    // 1. Parse Headers
     const headers = lines[0].split(',').map(h => h.replace(/^\uFEFF/, '').trim().toLowerCase());
-
     const parsedData = [];
     
     for (let i = 1; i < lines.length; i++) {
         if (lines[i].trim() === "") continue;
-
-        // 2. SMARTER SPLIT: Regex ignores commas inside quotes
         const currentLine = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         
         if (currentLine.length > 1) {
             const obj = {};
             headers.forEach((header, index) => {
                 let value = currentLine[index] ? currentLine[index].trim() : "";
-                
                 if (value.startsWith('"') && value.endsWith('"')) {
                     value = value.substring(1, value.length - 1);
                 }
-                
-                // Fix Excel double-quotes
                 value = value.replace(/""/g, '"');
-                
                 obj[header] = value;
             });
             parsedData.push(obj);
@@ -208,9 +186,3 @@ function parseCSV(csvText) {
     }
     return parsedData;
 }
-
-
-
-
-
-
