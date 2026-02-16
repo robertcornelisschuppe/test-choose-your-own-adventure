@@ -8,5 +8,6 @@ Hafen,"Betretet das Schiff!",Hafen.png,forest.mp3,Hafen.mp3,100,An Bord,Überfah
 Verschenken,"Auf zum Hafen!",Verschenken.png,forest.mp3,Verschenken.mp3,100,Hafen,Hafen_2,,
 Hafen_2,"Betretet das Schiff!",Hafen.png,forest.mp3,Hafen_2.mp3,100,An Bord,Überfahrt_2,,
 Überfahrt,"Geht an Land!",Überfahrt.png,forest.mp3,Überfahrt.mp3,100,Philadelphia,Philadelphia,,
+Überfahrt_2,"Geht an Land!",Überfahrt.png,forest.mp3,Überfahrt.mp3,100,Philadelphia,Philadelphia_2,,
 Philadelphia,"Reise nach Viriginia",Philadelphia.png,forest.mp3,Philadelphia.mp3,100,Craigsville,Craigsville,,
 Philadelphia_2,"Reise nach Viriginia",Philadelphia.png,forest.mp3,Philadelphia.mp3,100,Craigsville,Craigsville,,
