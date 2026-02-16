@@ -5,3 +5,7 @@ Werber,"Das wirst du dir durch den Kopf gehen lassen.",Werber.png,forest.mp3,Wer
 Planungen,"Möchtest du den Hof verkaufen oder an deinen Bruder Kurt übergeben?",Planungen.png,forest.mp3,Planungen.mp3,100,Verkaufen,Verkaufen,An deinen Bruder verschenken,Verschenken
 Verkaufen,"Auf zum Hafen!",Verkaufen.png,forest.mp3,Verkaufen.mp3,100,Hafen,Hafen,,
 Hafen,"Betretet das Schiff!",Hafen.png,forest.mp3,Hafen.mp3,100,An Bord,Überfahrt,,
+Verkaufen,"Auf zum Hafen!",Verschenken.png,forest.mp3,Verschenken.mp3,100,Hafen_2,Hafen_2,,
+Hafen_2,"Betretet das Schiff!",Hafen.png,forest.mp3,Hafen_2.mp3,100,An Bord,Überfahrt_2,,
+Philadelphia,"Reise nach Viriginia",Philadelphia.png,forest.png,Philadelphia.mp3,Craigsville,Craigsville
+Philadelphia_2,"Reise nach Viriginia",Philadelphia.png,forest.png,Philadelphia.mp3,Craigsville,Craigsville
